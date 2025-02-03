@@ -1,0 +1,104 @@
+body: SingleChildScrollView(
+  physics: const BouncingScrollPhysics(),
+  child: Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Wrap(
+      spacing: 8.0, // Horizontal spacing between cards
+      runSpacing: 8.0, // Vertical spacing between rows
+      children: character.results!.map((post) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width / 2 - 12, // Ensure two cards per row
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Character Image and Name
+                  Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          post.image!,
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.error, size: 60, color: Colors.red);
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              post.name ?? "Unknown",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              "Status: ${post.status ?? "N/A"}",
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                            Text(
+                              "Species: ${post.species ?? "N/A"}",
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  // Additional Details
+                  Text(
+                    "Origin: ${post.origin?.name ?? "Unknown"}",
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  Text(
+                    "Location: ${post.location?.name ?? "Unknown"}",
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: post.episode!.map((episode) {
+                      return Chip(
+                        label: Text(
+                          episode.split('/').last,
+                          style: const TextStyle(fontSize: 10),
+                        ),
+                        backgroundColor: Colors.blue[100],
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Created on: ${post.created ?? "N/A"}",
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    ),
+  ),
+);
