@@ -1,12 +1,15 @@
 import 'dart:convert';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bd_collection/app/modules/registration/model/sign_up.dart';
 import 'package:bd_collection/app/modules/registration/providers/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../../../../utils/constants/urls.dart';
+import '../../../routes/app_pages.dart';
 import '../model/divition.dart';
 import 'package:http/http.dart' as http;
+import 'package:bd_collection/app/modules/registration/model/divition.dart' as modelData;
+import 'package:bd_collection/app/modules/registration/model/sign_up.dart' as modelsign;
 
 class RegistrationController extends GetxController {
 
@@ -20,8 +23,10 @@ class RegistrationController extends GetxController {
 
       //* STEP 02 : VALIDATE RESPONSE AND DECODE JSON
       if (response.statusCode == 200) {
+
         return json.decode(response.body);
       } else {
+
         throw Exception('Failed to fetch posts');
       }
     } on Exception catch (e) {
@@ -33,11 +38,13 @@ class RegistrationController extends GetxController {
   Future sendData(String url, Map<String, dynamic> body) async {
     final response = await http.post(Uri.parse(url), body: body);
     if (response.statusCode == 201) {
+      print(json.decode(response.body));
 
 
       return json.decode(response.body);
     }
     else if(response.statusCode == 422){
+      print(json.decode(response.body));
       return json.decode(response.body);
 
     }
@@ -57,6 +64,7 @@ class RegistrationController extends GetxController {
   final formKey = GlobalKey<FormState>();
 
   final RxString division = ''.obs;
+  final RxString token = ''.obs;
   final RxString district = ''.obs;
   final RxString upazila = ''.obs;
   final RxString dialect = ''.obs;
@@ -128,6 +136,7 @@ void load() async{
   void onInit(){
     super.onInit();
     load();
+    fetchToken();
 
 
     
@@ -169,12 +178,18 @@ void load() async{
 
 
 
+void switchScreen(){
+  Get.offNamed(Routes.HOME);
+}
+
 
 
 
 
 
   Future<void> sign_Up() async {
+
+
     if (formKey.currentState!.validate()) {
       String apiUrl = "https://collection.bangla.gov.bd/api/register";
 
@@ -197,8 +212,12 @@ void load() async{
         "referer_code": referralCode.text,
       };
 
+
       try {
         final response = await sendData(apiUrl, userMap);
+
+        print(userMap["name"]);
+
         if (response != null) {
           SignUp signUpResponse = SignUp.fromJson(response);
 
@@ -206,7 +225,10 @@ void load() async{
             String? token = signUpResponse.data!.token;
             print("Signup Successful!");
             print("Token: $token");
+            Get.offNamed(Routes.LOGIN);
 
+
+           //
             print(jsonEncode(signUpResponse.data?.user?.toJson()));
 
             await saveToken(token);
@@ -243,22 +265,172 @@ void load() async{
     }
   }
 
-
+//token function start
 
 
   Future<void> saveToken(String? token) async {
     if (token != null) {
-
-
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', token);
       print("Token saved successfully!");
     }
   }
 
+  Future<void> fetchToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token.value = prefs.getString('auth_token') ?? '';
+    print("fetch token done successfully: ${token.value}");
+
+  }
 
 
+  Future<void> removeToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth_token');
+    print("Token removed successfully!");
+  }
 
 
+  //token function end
 
+
+void afterOnchangeDropdownForDivision(String? newValue) {
+
+    division.value = newValue!;
+    print(division.value);
+
+    //refresh start
+    district.value='';
+    upazila.value = '';
+    dialect.value = '';
+
+    dis.value=Division();
+    upodis.value = Division();
+    dial.value = Division();
+
+    //refresh end
+
+    modelData.Data? selectedData = div.value.data?.firstWhere(
+          (item) => item.label == division.value,
+      orElse: () => modelData.Data(label: '', value: null),
+    );
+
+    int? x = selectedData?.value?.toInt();
+    print(x);
+
+    if (x != null) {
+      division_id.value = x.toString();
+      load_dis(x);
+
+
+    }
+
+  }
+void afterOnchangeDropdownForDistrict(String? newValue){
+
+
+ district.value = newValue!;
+  print(district.value);
+
+
+  //refresh start
+  upazila.value = '';
+  dialect.value = '';
+
+  upodis.value = Division();
+  dial.value = Division();
+
+  //refresh end
+
+ modelData.Data? selectedData = dis.value.data?.firstWhere(
+  (item) => item.label == district.value,
+  orElse: () => modelData.Data(label: '', value: null),
+  );
+
+  int? x = selectedData?.value?.toInt();
+  print(x);
+
+  if (x != null) {
+  district_id.value = x.toString();
+  load_upodis(x);
+
+}
 
 
 }
+
+void afterOnchangeDropdownForUpozila(String? newValue) {
+
+    upazila.value = newValue!;
+    print(upazila.value);
+
+    //refresh start
+    dialect.value = '';
+    dial.value = Division();
+    //refresh end
+
+    modelData.Data? selectedData = upodis.value.data?.firstWhere(
+          (item) => item.label == upazila.value,
+      orElse: () => modelData.Data(label: '', value: null),
+    );
+
+    int? x = selectedData?.value?.toInt();
+    print(x);
+
+    if (x != null) {
+      upazila_id.value = x.toString();
+      load_dial(x);
+
+  }
+  }
+void afterOnchangeDropdownForDialeal(String? newValue) {
+
+  dialect.value = newValue!;
+  print(dialect.value);
+
+
+  modelData.Data? selectedData = dial.value.data?.firstWhere(
+        (item) => item.label == dialect.value,
+    orElse: () => modelData.Data(label: '', value: null),
+  );
+
+  int? x = selectedData?.value?.toInt();
+  print(x);
+
+  if (x != null) {
+    dialect_id.value = x.toString();
+
+
+  }
+  }
+
+}
+
+
+
+//
+//   onChanged: ((newValue) {
+//   controller.district.value = newValue!;
+//   print(controller.district.value);
+//
+//   controller.upazila.value = '';
+//   controller.dialect.value = '';
+//
+//   controller.upodis.value = Division();
+//   controller.dial.value = Division();
+//
+//   Data? selectedData = controller.dis.value.data?.firstWhere(
+//   (item) => item.label == controller.district.value,
+//   orElse: () => Data(label: '', value: null),
+//   );
+//
+//   int? x = selectedData?.value?.toInt();
+//   print(x);
+//
+//   if (x != null) {
+//   controller.district_id.value = x.toString();
+//   controller.load_upodis(x);
+//   }
+// },
+//
+
