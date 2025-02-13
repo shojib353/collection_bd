@@ -1,4 +1,5 @@
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -14,68 +15,94 @@ class RegistrationView extends GetView<RegistrationController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Sign Up')),
-      body: SingleChildScrollView(
-        child: Column(
-
-          children: [
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Form(
-                key: controller.formKey,
-                child: Column(
-                  children: [
-                    _buildTextField(
-                        'Name', controller.name, validator: (value) {
-                      if (value!.isEmpty) return 'Name is required';
-                      return null;
-                    }),
-                    _buildTextField('Mobile', controller.mobile,
-                        keyboardType: TextInputType.phone, validator: (value) {
-                          if (value!.isEmpty)
-                            return 'Mobile number is required';
-                          if (!RegExp(r'^\d{10,}$').hasMatch(value))
-                            return 'Enter a valid mobile number';
-                          return null;
-                        }),
-                    _buildTextField('Email', controller.email,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (value) {
-                          if (value!.isEmpty) return 'Email is required';
-                          if (!GetUtils.isEmail(value))
-                            return 'Enter a valid email';
-                          return null;
-                        }),
-                    _buildTextField(
-                        'Password', controller.password, obscureText: true,
-                        validator: (value) {
-                          if (value!.isEmpty) return 'Password is required';
-                          if (value.length < 6)
-                            return 'Password must be at least 6 characters';
-                          return null;
-                        }),
-                    _buildTextField(
-                        'Confirm Password', controller.confirmPassword,
-                        obscureText: true, validator: (value) {
-                      if (value!.isEmpty) return 'Please confirm your password';
-                      if (value != controller.password.text)
-                        return 'Passwords do not match';
-                      return null;
-                    }),
-                    SizedBox(height: 10),
-
-
-                    Row(
-                      children: [
-                        Expanded(
-
-                          // Division start
-
-
-                          child:
-                          Obx(() {
-                            if (controller.isloading.value) {
+    return SafeArea(
+      child: Scaffold(
+      
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+          
+          
+            children: [
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 20,),
+                      Text("Sign Up",style: TextStyle(
+                        fontSize: 28.0, // Adjust this value to increase/decrease font size
+                        fontWeight: FontWeight.bold, // Optional: Makes the text bold
+                        color: Colors.teal, // Optional: Set text color
+                      ),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 10,),
+          
+                      _buildTextField(
+                          'Name', controller.name, validator: (value) {
+                        if (value!.isEmpty) return 'Name is required';
+                        return null;
+                      }),
+                      _buildTextField('Mobile', controller.mobile,
+                          keyboardType: TextInputType.phone, validator: (value) {
+                            if (value!.isEmpty)
+                              return 'Mobile number is required';
+                            if (!RegExp(r'^\d{10,}$').hasMatch(value))
+                              return 'Enter a valid mobile number';
+                            return null;
+                          }),
+                      _buildTextField('Email', controller.email,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value!.isEmpty) return 'Email is required';
+                            if (!GetUtils.isEmail(value))
+                              return 'Enter a valid email';
+                            return null;
+                          }),
+                      _buildTextField(
+                          'Password', controller.password, obscureText: true,
+                          validator: (value) {
+                            if (value!.isEmpty) return 'Password is required';
+                            if (value.length < 6)
+                              return 'Password must be at least 6 characters';
+                            return null;
+                          }),
+                      _buildTextField(
+                          'Confirm Password', controller.confirmPassword,
+                          obscureText: true, validator: (value) {
+                        if (value!.isEmpty) return 'Please confirm your password';
+                        if (value != controller.password.text)
+                          return 'Passwords do not match';
+                        return null;
+                      }),
+                      SizedBox(height: 10),
+          
+          
+                      Row(
+                        children: [
+                          Expanded(
+          
+                            // Division start
+          
+          
+                            child:
+                            Obx(() {
+                              if (controller.isloading.value) {
+                                return CustomDropdown(
+                                  label: "Division",
+                                  items: controller.div.value.data,
+                                  // Pass your list of items
+                                  value: controller.division.value,
+                                  // Selected value
+                                  onChanged: ((newValue) =>
+                                      controller.afterOnchangeDropdownForDivision(
+                                          newValue)),
+                                ); // ✅ Show loader while data is loading
+                              }
                               return CustomDropdown(
                                 label: "Division",
                                 items: controller.div.value.data,
@@ -85,40 +112,45 @@ class RegistrationView extends GetView<RegistrationController> {
                                 onChanged: ((newValue) =>
                                     controller.afterOnchangeDropdownForDivision(
                                         newValue)),
-                              ); // ✅ Show loader while data is loading
-                            }
-                            return CustomDropdown(
-                              label: "Division",
-                              items: controller.div.value.data,
-                              // Pass your list of items
-                              value: controller.division.value,
-                              // Selected value
-                              onChanged: ((newValue) =>
-                                  controller.afterOnchangeDropdownForDivision(
-                                      newValue)),
-                            );
-
-                            // return _buildDropdown(
-                            //   'Division',
-                            //
-                            //   controller.div.value.data ?? [],
-                            // );
-                          }),
-                        ),
-
-
-                        // Division end
-
-
-                        SizedBox(width: 10),
-
-                        //  District start
-                        Expanded(
-                          child: Obx(() {
-                            if (controller.isdisloading.value) {
+                              );
+          
+                              // return _buildDropdown(
+                              //   'Division',
+                              //
+                              //   controller.div.value.data ?? [],
+                              // );
+                            }),
+                          ),
+          
+          
+                          // Division end
+          
+          
+                          SizedBox(width: 10),
+          
+                          //  District start
+                          Expanded(
+                            child: Obx(() {
+                              if (controller.isdisloading.value) {
+                                return CustomDropdown(
+                                  label: "District",
+                                  items: [],
+                                  // Pass your list of items
+                                  value: controller.district.value,
+                                  // Selected value
+                                  onChanged: ((newValue) =>
+                                      controller.afterOnchangeDropdownForDistrict(
+                                          newValue)),
+                                );
+                                // return _disbuildDropdown(
+                                //   'Distict',
+                                //
+                                //   [],
+                                // ); // ✅ Show loader while data is loading
+                              }
                               return CustomDropdown(
                                 label: "District",
-                                items: [],
+                                items: controller.dis.value.data,
                                 // Pass your list of items
                                 value: controller.district.value,
                                 // Selected value
@@ -129,190 +161,205 @@ class RegistrationView extends GetView<RegistrationController> {
                               // return _disbuildDropdown(
                               //   'Distict',
                               //
-                              //   [],
-                              // ); // ✅ Show loader while data is loading
-                            }
-                            return CustomDropdown(
-                              label: "District",
-                              items: controller.dis.value.data,
-                              // Pass your list of items
-                              value: controller.district.value,
-                              // Selected value
-                              onChanged: ((newValue) =>
-                                  controller.afterOnchangeDropdownForDistrict(
-                                      newValue)),
-                            );
-                            // return _disbuildDropdown(
-                            //   'Distict',
-                            //
-                            //   controller.dis.value.data ?? [],
-                            // );
-                          }),
-                        ),
-                      ],
-                    ),
-
-                    //  District End
-
-
-                    SizedBox(height: 10),
-
-
-                    Obx(() =>
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-
-                          children: [
-
-                            //'Upazila/Thana' start
-
-                            Expanded(
-
-                                child:
-                                controller.isupodisloading.value ?
-                                CustomDropdown(
-                                  label: 'Upazila/Thana',
-                                  items: [],
-                                  // Pass your list of items
-                                  value: controller.upazila.value,
-                                  // Selected value
-                                  onChanged: ((newValue) =>
-                                      controller
-                                          .afterOnchangeDropdownForUpozila(
-                                          newValue)),
-                                )
-                                // _upazilabuildDropdown(
-                                //   'Upazila/Thana',
-                                //
-                                //   [],
-                                // ) :
-                                    :
-                                CustomDropdown(
-                                  label: "Upazila/Thana",
-                                  items: controller.upodis.value.data,
-                                  // Pass your list of items
-                                  value: controller.upazila.value,
-                                  // Selected value
-                                  onChanged: ((newValue) =>
-                                      controller
-                                          .afterOnchangeDropdownForUpozila(
-                                          newValue)),
-                                )
-
-
-                            ),
-
-
-                            //'Upazila/Thana' end
-
-
-                            SizedBox(width: 10),
-
-
-                            // dialeal start
-
-                            Expanded(
-
-                                child: Obx(() =>
-                                controller.isdialloading.value ?
-                                CustomDropdown(
-                                  label: "dialeal'",
-                                  items: [],
-                                  // Pass your list of items
-                                  value: controller.dialect.value,
-                                  // Selected value
-                                  onChanged: ((newValue) =>
-                                      controller
-                                          .afterOnchangeDropdownForDialeal(
-                                          newValue)),
-                                )
-                                // _dialbuildDropdown(
-                                //   'dialeal',
-                                //
-                                //   [],
-                                // ) // ✅ Show loader while data is loading
-                                    :
-                                CustomDropdown(
-                                  label: "dialeal'",
-                                  items: controller.dial.value.data,
-                                  // Pass your list of items
-                                  value: controller.dialect.value,
-                                  // Selected value
-                                  onChanged: ((newValue) =>
-                                      controller
-                                          .afterOnchangeDropdownForDialeal(
-                                          newValue)),
-                                )
-
+                              //   controller.dis.value.data ?? [],
+                              // );
+                            }),
+                          ),
+                        ],
+                      ),
+          
+                      //  District End
+          
+          
+                      SizedBox(height: 10),
+          
+          
+                      Obx(() =>
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+          
+                            children: [
+          
+                              //'Upazila/Thana' start
+          
+                              Expanded(
+          
+                                  child:
+                                  controller.isupodisloading.value ?
+                                  CustomDropdown(
+                                    label: 'Upazila/Thana',
+                                    items: [],
+                                    // Pass your list of items
+                                    value: controller.upazila.value,
+                                    // Selected value
+                                    onChanged: ((newValue) =>
+                                        controller
+                                            .afterOnchangeDropdownForUpozila(
+                                            newValue)),
+                                  )
+                                  // _upazilabuildDropdown(
+                                  //   'Upazila/Thana',
+                                  //
+                                  //   [],
+                                  // ) :
+                                      :
+                                  CustomDropdown(
+                                    label: "Upazila/Thana",
+                                    items: controller.upodis.value.data,
+                                    // Pass your list of items
+                                    value: controller.upazila.value,
+                                    // Selected value
+                                    onChanged: ((newValue) =>
+                                        controller
+                                            .afterOnchangeDropdownForUpozila(
+                                            newValue)),
+                                  )
+          
+          
+                              ),
+          
+          
+                              //'Upazila/Thana' end
+          
+          
+                              SizedBox(width: 10),
+          
+          
+                              // dialeal start
+          
+                              Expanded(
+          
+                                  child: Obx(() =>
+                                  controller.isdialloading.value ?
+                                  CustomDropdown(
+                                    label: "dialeal'",
+                                    items: [],
+                                    // Pass your list of items
+                                    value: controller.dialect.value,
+                                    // Selected value
+                                    onChanged: ((newValue) =>
+                                        controller
+                                            .afterOnchangeDropdownForDialeal(
+                                            newValue)),
+                                  )
                                   // _dialbuildDropdown(
                                   //   'dialeal',
                                   //
-                                  //   controller.dial.value.data ?? [],
-                                  // ),
-                                )
-
-
+                                  //   [],
+                                  // ) // ✅ Show loader while data is loading
+                                      :
+                                  CustomDropdown(
+                                    label: "dialeal'",
+                                    items: controller.dial.value.data,
+                                    // Pass your list of items
+                                    value: controller.dialect.value,
+                                    // Selected value
+                                    onChanged: ((newValue) =>
+                                        controller
+                                            .afterOnchangeDropdownForDialeal(
+                                            newValue)),
+                                  )
+          
+                                    // _dialbuildDropdown(
+                                    //   'dialeal',
+                                    //
+                                    //   controller.dial.value.data ?? [],
+                                    // ),
+                                  )
+          
+          
+                              ),
+          
+          
+                              // dialeal end
+          
+          
+                            ],
+                          ),
+          
+                      ),
+          
+          
+                      // Obx(() =>
+                      //     CustomDropdown(
+                      //       label: "District",
+                      //       items: controller.dis.value.data,
+                      //       // Pass your list of items
+                      //       value: controller.district.value,
+                      //       // Selected value
+                      //       onChanged: ((newValue) =>
+                      //           controller.afterOnchangeDropdownForDivision(
+                      //               newValue)),
+                      //     )
+                      // ),
+          
+          
+                      SizedBox(width: 10),
+                      _buildTextField(
+                          'Referral Code (if any)', controller.referralCode,
+                          required: false),
+                      SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (controller.formKey.currentState!.validate()) {
+                                  controller.sign_Up();
+          
+                                } else {
+                                  print("Form is invalid!");
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.teal),
+                              child: Text(
+                                  'Sign Up', style: TextStyle(color: Colors.white)),
                             ),
-
-
-                            // dialeal end
-
-
-                          ],
-                        ),
-
-                    ),
-
-
-                    // Obx(() =>
-                    //     CustomDropdown(
-                    //       label: "District",
-                    //       items: controller.dis.value.data,
-                    //       // Pass your list of items
-                    //       value: controller.district.value,
-                    //       // Selected value
-                    //       onChanged: ((newValue) =>
-                    //           controller.afterOnchangeDropdownForDivision(
-                    //               newValue)),
-                    //     )
-                    // ),
-
-
-                    SizedBox(width: 10),
-                    _buildTextField(
-                        'Referral Code (if any)', controller.referralCode,
-                        required: false),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                       onPressed: () {
-                        if (controller.formKey.currentState!.validate()) {
-                          controller.sign_Up();
-
-                        } else {
-                          print("Form is invalid!");
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange),
-                      child: Text(
-                          'Sign Up', style: TextStyle(color: Colors.white)),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Get.offNamed(Routes.LOGIN);
-
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purpleAccent),
-                      child: Text(
-                          'Sign In', style: TextStyle(color: Colors.white)),
-                    ),
-                  ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              text: "have an account? ",
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.blueGrey,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "Login now",
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.teal, // Make it look like a link
+                                    decoration: TextDecoration.underline, // Underline for better visibility
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      // Replace with your Signup screen
+                                      Get.offNamed(Routes.LOGIN);
+          
+                                    },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+          
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -336,7 +383,16 @@ class RegistrationView extends GetView<RegistrationController> {
             ? '$label is required'
             : null,
         decoration: InputDecoration(
-            labelText: label, border: OutlineInputBorder()),
+            labelText: label, border: OutlineInputBorder(),
+
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.teal, width: 2.0), // Change color when focused
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey, width: 1.0), // Default border color
+          ),
+        ),
+
       ),
     );
   }

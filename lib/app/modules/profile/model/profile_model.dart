@@ -42,7 +42,7 @@ class Data {
   int? dialectId;
   int? createdBy;
   int? updatedBy;
-  double? totalPoints;
+  int? totalPoints;
 
   Data(
       {this.id,

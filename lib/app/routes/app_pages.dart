@@ -15,6 +15,7 @@ class AppPages {
   AppPages._();
 
   static const INITIAL = Routes.LOGIN;
+  static const VERIFIEDINITIAL = Routes.PROFILE;
 
   static final routes = [
     GetPage(

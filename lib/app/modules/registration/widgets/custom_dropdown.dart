@@ -22,10 +22,10 @@ class CustomDropdown extends StatelessWidget {
       value: value?.isEmpty == true ? null : value,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
+        labelStyle: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+          borderRadius: BorderRadius.circular(0),
+          borderSide: BorderSide(color: Colors.teal, width: 2),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -33,11 +33,11 @@ class CustomDropdown extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.blue, width: 2),
+          borderSide: BorderSide(color: Colors.teal, width: 2),
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       ),
-      icon: Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.orange, size: 30),
+      icon: Icon(Icons.arrow_drop_down_circle_outlined, color: Colors.teal, size: 30),
       dropdownColor: Colors.white,
       style: TextStyle(color: Colors.black, fontSize: 16),
       isExpanded: true,
