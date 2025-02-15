@@ -21,6 +21,8 @@ class MyHttpOverrides extends HttpOverrides {
 
 
 void main() async{
+
+
   WidgetsFlutterBinding.ensureInitialized();
   var isTokenValid = validateToken();
   HttpOverrides.global = MyHttpOverrides();
