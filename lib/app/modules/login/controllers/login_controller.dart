@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../utils/constants/urls.dart';
 import '../../../routes/app_pages.dart';
 
 class LoginController extends GetxController {
@@ -112,7 +113,7 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     if (formKey.currentState!.validate()) {
-      String apiUrl = "https://collection.bangla.gov.bd/api/login"; // ✅ Use login API
+      String apiUrl = login_url; // ✅ Use login API
 
       Map<String, dynamic> userMap = {
         "username": email.text,
@@ -132,6 +133,8 @@ class LoginController extends GetxController {
 
       try {
         final response = await provider.sendData(apiUrl, userMap);
+
+        print("Raw Response: $response");
 
         if (response != null) {
           SignIn loginResponse = SignIn.fromJson(response); // ✅ Assuming SignUp model works for login

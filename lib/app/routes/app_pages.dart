@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/all_record/bindings/all_record_binding.dart';
+import '../modules/all_record/views/all_record_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -37,6 +39,11 @@ class AppPages {
       name: _Paths.PROFILE,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.ALL_RECORD,
+      page: () => const AllRecordView(),
+      binding: AllRecordBinding(),
     ),
   ];
 }

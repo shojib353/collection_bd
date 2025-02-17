@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bd_collection/app/modules/registration/model/sign_up.dart';
-import 'package:bd_collection/app/modules/registration/providers/user_provider.dart';
+import 'package:bd_collection/app/modules/registration/providers/registration_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../../../../utils/constants/urls.dart';
@@ -14,46 +14,46 @@ import 'package:bd_collection/app/modules/registration/model/sign_up.dart' as mo
 class RegistrationController extends GetxController {
 
 
-
+  final RegistrationProvider provider = Get.find<RegistrationProvider>();
   //TODO: Implement RegistrationController
-  Future fetchData(String url) async {
-    //* STEP 01 : SEND REQUEST AND ACCEPT RESPONSE
-    try {
-      final response = await http.get(Uri.parse('${base_url}$url'));
 
-      //* STEP 02 : VALIDATE RESPONSE AND DECODE JSON
-      if (response.statusCode == 200) {
+  // Future fetchData(String url) async {
+  //   //* STEP 01 : SEND REQUEST AND ACCEPT RESPONSE
+  //   try {
+  //     final response = await http.get(Uri.parse('${base_url}$url'));
+  //
+  //     //* STEP 02 : VALIDATE RESPONSE AND DECODE JSON
+  //     if (response.statusCode == 200) {
+  //
+  //       return json.decode(response.body);
+  //     } else {
+  //
+  //       throw Exception('Failed to fetch posts');
+  //     }
+  //   } on Exception catch (e) {
+  //     throw Exception(e);
+  //   }
+  // }
 
-        return json.decode(response.body);
-      } else {
-
-        throw Exception('Failed to fetch posts');
-      }
-    } on Exception catch (e) {
-      throw Exception(e);
-    }
-  }
-
-
-  Future sendData(String url, Map<String, dynamic> body) async {
-    final response = await http.post(Uri.parse(url), body: body);
-    if (response.statusCode == 201) {
-      print(json.decode(response.body));
-
-
-      return json.decode(response.body);
-    }
-    else if(response.statusCode == 422){
-      print(json.decode(response.body));
-      return json.decode(response.body);
-
-    }
-
-    else {
-
-      throw Exception(json.decode(response.body));
-    }
-  }
+  // Future sendData(String url, Map<String, dynamic> body) async {
+  //   final response = await http.post(Uri.parse(url), body: body);
+  //   if (response.statusCode == 201) {
+  //     print(json.decode(response.body));
+  //
+  //
+  //     return json.decode(response.body);
+  //   }
+  //   else if(response.statusCode == 422){
+  //     print(json.decode(response.body));
+  //     return json.decode(response.body);
+  //
+  //   }
+  //
+  //   else {
+  //
+  //     throw Exception(json.decode(response.body));
+  //   }
+  // }
 
   final TextEditingController name = TextEditingController();
   final TextEditingController mobile = TextEditingController();
@@ -96,14 +96,14 @@ class RegistrationController extends GetxController {
 
 
 void load() async{
-  final data= await fetchData("api/division-options");
+  final data= await provider.GetRegistrationRequireData("${base_url}api/division-options");
   div.value=Division.fromJson(data);
   isloading.value=false;
   print(div.value.data?[1].value);
 }
 
   void load_dis(int division) async{
-    final data= await fetchData("api/district-options/$division");
+    final data= await provider.GetRegistrationRequireData("${base_url}api/district-options/$division");
     dis.value=Division.fromJson(data);
     isdisloading.value=false;
     print(dis.value.data?[1].value);
@@ -111,7 +111,7 @@ void load() async{
 
 
   void load_upodis(int upazilas) async{
-    final data= await fetchData("api/upazila-options/$upazilas");
+    final data= await provider.GetRegistrationRequireData("${base_url}api/upazila-options/$upazilas");
 
     upodis.value=Division.fromJson(data);
     isupodisloading.value=false;
@@ -122,7 +122,7 @@ void load() async{
 
 
   void load_dial(int d) async{
-    final data= await fetchData("api/dialect-options/$d");
+    final data= await provider.GetRegistrationRequireData("${base_url}api/dialect-options/$d");
 
     dial.value=Division.fromJson(data);
     isdialloading.value=false;
@@ -153,6 +153,7 @@ void load() async{
   @override
   void onClose() {
     super.onClose();
+    name.clear();
 
   }
 
@@ -191,7 +192,7 @@ void switchScreen(){
 
 
     if (formKey.currentState!.validate()) {
-      String apiUrl = "https://collection.bangla.gov.bd/api/register";
+      String apiUrl = "http://collection.bangla.gov.bd/api/register";
 
       // ✅ Validate mobile number before sending request
       if (!RegExp(r'^\d{11}$').hasMatch(mobile.text)) {
@@ -214,7 +215,7 @@ void switchScreen(){
 
 
       try {
-        final response = await sendData(apiUrl, userMap);
+        final response = await provider.postSignupData(apiUrl, userMap);
 
         print(userMap["name"]);
 

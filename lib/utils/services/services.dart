@@ -1,17 +1,31 @@
 import 'dart:convert';
 
+
+import 'package:get/get_connect/connect.dart';
 import 'package:http/http.dart' as http;
 
-class ApiService {
-  Future fetchData(String url) async {
+class ApiService extends GetConnect{
+
+
+
+  Future fetchData(String url,String accessToken) async {
     //* STEP 01 : SEND REQUEST AND ACCEPT RESPONSE
+
+    print(url);
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await get(url,
+        headers: {
+          "Authorization": "Bearer $accessToken", // ✅ Send token in headers
+          "Content-Type": "application/json",
+        },);
 
       //* STEP 02 : VALIDATE RESPONSE AND DECODE JSON
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
+      if (response.isOk) {
+        print(json.decode(response.bodyString!));
+        return json.decode(response.bodyString!);
+
       } else {
+
         throw Exception('Failed to fetch posts');
       }
     } on Exception catch (e) {
@@ -19,19 +33,41 @@ class ApiService {
     }
   }
 
-  Future fetchDataWithToken(String url, String token) async {
-    //* STEP 01 : SEND REQUEST AND ACCEPT RESPONSE
+
+
+
+
+  Future sendDataGetxPost(String url, Map<String, dynamic> body) async {
     try {
-      final response = await http.get(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
+      final response = await post(url, body);
+
+
+      if (response.isOk || response.statusCode == 422) {
+        return json.decode(response.bodyString!);
+      } else {
+        throw Exception('Error: ${response.statusCode}, ${response.bodyString}');
+      }
+    } catch (e) {
+      print('Exception: $e');
+      return {'error': 'Something went wrong', 'details': e.toString()};
+    }
+  }
+
+
+
+  Future fetchRegData(String url) async {
+    //* STEP 01 : SEND REQUEST AND ACCEPT RESPONSE
+
+    print(url);
+    try {
+      final response = await get(url);
 
       //* STEP 02 : VALIDATE RESPONSE AND DECODE JSON
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
+      if (response.isOk) {
+
+        return json.decode(response.bodyString!);
       } else {
+
         throw Exception('Failed to fetch posts');
       }
     } on Exception catch (e) {
@@ -39,14 +75,8 @@ class ApiService {
     }
   }
 
-  Future sendData(String url, Map<String, dynamic> body) async {
-    final response = await http.post(Uri.parse(url), body: body);
-    print(response.body);
-    print(response.statusCode);
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('Failed to fetch posts');
-    }
-  }
+
+
+
+
 }

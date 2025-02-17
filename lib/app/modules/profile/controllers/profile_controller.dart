@@ -1,4 +1,5 @@
-import 'dart:convert';
+
+
 import 'dart:io';
 
 import 'package:bd_collection/app/modules/profile/providers/profile_provider.dart';
@@ -24,6 +25,8 @@ class ProfileController extends GetxController {
   var emailController = TextEditingController();
   var selectedImage =" ".obs; // Store image path
   var isLoading = true.obs;
+  var photo =" ".obs;
+
 
 
 
@@ -103,11 +106,44 @@ class ProfileController extends GetxController {
 
 
 
+
+
+
+
+
+
+
+
+
+  void updateProfileData() async {
+    if (selectedImage.value.isEmpty) {
+      Get.snackbar("Error", "No image selected", snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
+    File imageFile = File(selectedImage.value);
+
+    if (!await imageFile.exists()) {
+      Get.snackbar("Error", "Selected image does not exist", snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
+    Map<String, dynamic> formDataMap = {
+      "name": nameController.text,
+      "email": emailController.text,
+      "photo": MultipartFile(imageFile, filename: selectedImage.value.split('/').last),
+    };
+
+    FormData formData = FormData(formDataMap);
+
+    provider.updateProfile(formData);
+  }
+
   void getUserProfile() async {
 
     var token = await getSavedToken(); // Retrieve saved token
     var userId = await getSavedUserId(); // Retrieve saved user ID
-    String urls="${base_url}api/profile?user-id=$userId";
+    String url="${base_url}api/profile?user-id=$userId";
     print("profile userid =$userId");
 
 
@@ -116,7 +152,7 @@ class ProfileController extends GetxController {
 
     if (token != null && userId != null) {
       print("profile token =$token");
-       final profile = await provider.fetchData(urls,token);
+       final profile = await provider.fetchProfileData(url,token);
 
       if (profile != null && profile != null && profile.isNotEmpty) {
         userProfile.value=ProfileModel.fromJson(profile);
@@ -127,7 +163,8 @@ class ProfileController extends GetxController {
 
         nameController.text=userData.name!;
         emailController.text=userData.email!;
-        selectedImage.value = userData.photo ?? '';
+
+        photo.value = userData.photo ?? '';
         isLoading.value = false;
 
 

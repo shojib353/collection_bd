@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bd_collection/utils/constants/constants.dart';
+import 'package:bd_collection/utils/constants/urls.dart';
 import 'package:bd_collection/utils/services/services.dart';
 import 'package:flutter/material.dart';
 
@@ -43,8 +44,8 @@ Future<bool> validateToken() async {
 
   if (userId != null && userToken != null) {
     final ApiService _apiService = ApiService();
-    final response = await _apiService.fetchDataWithToken(
-        '${Constants.PROFILE_API_URL}$userId', userToken);
+    final response = await _apiService.fetchData(
+        '${profile_url}$userId', userToken);
     if (response != null) {
       if (response['status'] == 'success') {
         return true;
