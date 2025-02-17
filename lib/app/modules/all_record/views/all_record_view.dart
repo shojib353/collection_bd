@@ -10,7 +10,7 @@ class AllRecordView extends GetView<AllRecordController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('All Record')),
+      appBar: AppBar(title: Text('User List')),
       body: Obx(() {
         if (controller.allRecordModel.value.data == null ||
             controller.allRecordModel.value.data!.dataList == null) {
@@ -19,47 +19,71 @@ class AllRecordView extends GetView<AllRecordController> {
 
         var dataList = controller.allRecordModel.value.data!.dataList!;
 
-        return Column(
-          children: [
-            // Table Header Row
-            Container(
-              color: Colors.blueAccent,
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _tableHeaderCell("DATA ID"),
-                  _tableHeaderCell("USER"),
-                  _tableHeaderCell("TOPIC"),
-                  _tableHeaderCell("SENTENCE"),
-                  _tableHeaderCell("ACTION ITEMS"),
-                ],
-              ),
-            ),
-
-            // Table Body
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: dataList.map((item) {
-                    return _buildTableRow(item);
-                  }).toList(),
+        return NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
+                !controller.isLoading.value) {
+              controller.fetchRecords(); // Load next batch
+            }
+            return false;
+          },
+          child: Column(
+            children: [
+              // Table Header
+              Container(
+                color: Colors.blueAccent,
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    _tableHeaderCell("DATA ID", flex: 1),
+                    _tableHeaderCell("USER", flex: 2),
+                    _tableHeaderCell("TOPIC", flex: 2),
+                    _tableHeaderCell("SENTENCE", flex: 3),
+                    _tableHeaderCell("ACTION ITEMS", flex: 2),
+                  ],
                 ),
               ),
-            ),
-          ],
+
+              // Data List
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: dataList.asMap().entries.map((entry) {
+                      int index = entry.key;
+                      var item = entry.value;
+
+                      return Column(
+                        children: [
+                          _buildTableRow(item),
+                          if (index == dataList.length - 1 &&
+                              controller.isLoading.value)
+                            Padding(
+                              padding: EdgeInsets.all(10),
+                              child: CircularProgressIndicator(),
+                            ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       }),
     );
   }
 
   // Header Cell Widget
-  Widget _tableHeaderCell(String title) {
-    return Expanded(
-      child: Text(
-        title,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        textAlign: TextAlign.center,
+  Widget _tableHeaderCell(String title, {int flex = 1}) {
+    return Flexible(
+      flex: flex,
+      child: Center(
+        child: Text(
+          title,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
@@ -70,49 +94,54 @@ class AllRecordView extends GetView<AllRecordController> {
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
       ),
-      padding: EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _tableDataCell('${item.id ?? "N/A"}'),
-          _tableDataCell(item.user?.name ?? "No Name"),
-          _tableDataCell(item.topicSessionId?.toString() ?? "N/A"),
-          _tableDataCell(item.userSentence ?? "(empty)"),
-          _actionItemsCell(item.records),
+          _tableDataCell('${item.id ?? "N/A"}', flex: 1),
+          _tableDataCell(item.user?.name ?? "No Name", flex: 2),
+          _tableDataCell(item.topicSessionId?.toString() ?? "N/A", flex: 2),
+          _tableDataCell(item.userSentence ?? "(empty)", flex: 3),
+          _actionItemsCell(item.records, flex: 2),
         ],
       ),
     );
   }
 
   // Data Cell Widget
-  Widget _tableDataCell(String text) {
-    return Expanded(
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 14),
-        textAlign: TextAlign.center,
+  Widget _tableDataCell(String text, {int flex = 1}) {
+    return Flexible(
+      flex: flex,
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 14),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
 
-  // Action Items with Like Button and Play Button
-  Widget _actionItemsCell(String? audioUrl) {
-    return Expanded(
+  // Action Items (Like & Play Buttons)
+  Widget _actionItemsCell(String? audioUrl, {int flex = 2}) {
+    return Flexible(
+      flex: flex,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          IconButton(
-            icon: Icon(Icons.thumb_up, color: Colors.grey),
-            onPressed: () {
-              // Handle like action
-            },
+          Expanded(
+            child: IconButton(
+              icon: Icon(Icons.thumb_up, color: Colors.grey),
+              onPressed: () {
+                // Handle like action
+              },
+            ),
           ),
           if (audioUrl != null && audioUrl.isNotEmpty)
             Expanded(
               child: IconButton(
                 icon: Icon(Icons.play_circle_fill, color: Colors.blue),
                 onPressed: () {
-                  controller.playAudio(audioUrl);
+                  _playAudio(audioUrl);
                 },
               ),
             ),
@@ -121,5 +150,9 @@ class AllRecordView extends GetView<AllRecordController> {
     );
   }
 
+  // final AudioPlayer player = AudioPlayer();
 
+  void _playAudio(String audioUrl) async {
+   // await player.play(UrlSource(audioUrl));
+  }
 }

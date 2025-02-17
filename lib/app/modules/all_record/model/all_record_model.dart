@@ -30,7 +30,7 @@ class Data {
   String? nextPageUrl;
   String? path;
   int? perPage;
-  Null? prevPageUrl;
+  String? prevPageUrl;
   int? to;
   int? total;
 
@@ -100,7 +100,7 @@ class Data {
 
 class DataList {
   int? id;
-  Null? text;
+  String? text;
   String? userSentence;
   String? records;
   int? totalSeconds;
