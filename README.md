@@ -11,7 +11,6 @@ The app connects to the Bangladesh Digital Collection API via HTTP requests to f
 
 For more information on the API, visit: Bangladesh Digital Collection API Documentation.
 
-Authentication  with api call
 ![Watch the video](https://img.youtube.com/vi/OTwd3-1L4zk/0.jpg)
 ![Watch the video](https://img.youtube.com/vi/WJOH979LDzQ/0.jpg)
 
