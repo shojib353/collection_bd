@@ -1,16 +1,14 @@
-# bd_collection
+Flutter App - Bangladesh Digital Collection
+Overview
+This Flutter app utilizes the Bangladesh Digital Collection API to access various government datasets, including historical documents, public records, and other resources. The goal of this app is to provide an easy-to-use interface for users to explore and search through these valuable resources.
 
-A new Flutter project.
+Features
+Search Functionality: Allows users to search for documents and resources available in the Bangladesh Government's digital collection.
+View Resource Details: Users can view detailed information about each resource.
+User-Friendly Interface: An intuitive and responsive design built using Flutter.
+API Used
+The app connects to the Bangladesh Digital Collection API via HTTP requests to fetch and display the data. The API provides access to various categories, records, and details about documents and resources curated by the Bangladesh government.
 
-## Getting Started
+For more information on the API, visit: Bangladesh Digital Collection API Documentation.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
