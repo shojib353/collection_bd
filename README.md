@@ -10,9 +10,8 @@ API Used
 The app connects to the Bangladesh Digital Collection API via HTTP requests to fetch and display the data. The API provides access to various categories, records, and details about documents and resources curated by the Bangladesh government.
 
 For more information on the API, visit: Bangladesh Digital Collection API Documentation.
+
 Authentication  with api call
 ![Watch the video](https://img.youtube.com/vi/OTwd3-1L4zk/0.jpg)
-
-Upadte feature
 ![Watch the video](https://img.youtube.com/vi/WJOH979LDzQ/0.jpg)
 
