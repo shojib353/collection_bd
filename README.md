@@ -14,3 +14,5 @@ For more information on the API, visit: Bangladesh Digital Collection API Docume
 ![Watch the video](https://img.youtube.com/vi/OTwd3-1L4zk/0.jpg)
 ![Watch the video](https://img.youtube.com/vi/WJOH979LDzQ/0.jpg)
 
+link 1:https://www.youtube.com/shorts/OTwd3-1L4zk
+link 2:https://www.youtube.com/watch?v=WJOH979LDzQ
