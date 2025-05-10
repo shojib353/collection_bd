@@ -1,6 +1,6 @@
 Flutter App - Bangladesh Digital Collection
 Overview
-This Flutter app utilizes the Bangladesh Digital Collection API to access various government datasets, including historical documents, public records, and other resources. The goal of this app is to provide an easy-to-use interface for users to explore and search through these valuable resources.
+This Flutter app utilizes the Bangladesh Digital Collection API to access government datasets, including historical documents, public records, and other resources. Its goal is to provide an easy-to-use interface for users to explore and search these valuable resources.
 
 Features
 Search Functionality: Allows users to search for documents and resources available in the Bangladesh Government's digital collection.
